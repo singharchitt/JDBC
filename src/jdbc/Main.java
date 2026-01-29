@@ -1,29 +1,94 @@
 package jdbc;
 
 import java.sql.*;
+import java.util.Scanner;
 
+public class Main {
+    private static final String URL = "jdbc:mysql://localhost:3306/test";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "admin";
 
-public class Main{
-    public static void main(String[] args)throws ClassNotFoundException, SQLException{
+    public static void main(String[] args) throws SQLException {
         Connection connection = null;
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "admin");
-            System.out.println("Connected to database successfully");
-        }catch (ClassNotFoundException e) {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println("Connected to the database");
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(67);
         }
-        final String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS Employees (
-                ID INT PRIMARY KEY AUTO_INCREMENT,
-                Name VARCHAR(100) NOT NULL,
-                Position VARCHAR(100),
-                Salary DECIMAL(10, 2) NOT NULL,
-                JoinDate DATE);
-                """.trim();
+
         Statement statement = connection.createStatement();
-        statement.execute(createTableSQL);
+        int choice;
+        Scanner sc = new Scanner(System.in);
+        do {
+            System.out.println("""
+                    Enter you choice:
+                        1. Create table
+                        2. Insert data
+                        3. Update data
+                        4. Delete data
+                        0. Exit""");
+
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1 -> createTable(statement);
+                case 2 -> insertData(statement);
+                case 3 -> updateData(statement);
+                case 4 -> deleteData(statement);
+                case 0 -> System.out.println("Exiting...");
+                default -> System.out.println("Incorrect options selected");
+            }
+        } while (choice > 0);
+    }
+
+    private static void createTable(Statement statement) throws SQLException {
+        final String createTableSQL = """
+                   CREATE TABLE IF NOT EXISTS Student (
+                    ID INT PRIMARY KEY AUTO_INCREMENT,
+                    Name VARCHAR(100) NOT NULL,
+                    Age INT NOT NULL,
+                    Course VARCHAR(100)
+                   );
+                """.trim();
+
+        statement.executeUpdate(createTableSQL);
+        System.out.println("Table Student created");
+    }
+
+    private static void insertData(Statement statement) throws SQLException {
+        final String insertSQL = """
+                   INSERT INTO Student
+                   (Name, Age, Course)
+                   VALUES
+                   ("Bharat", 18, "CS");
+                """.trim();
+
+        statement.executeUpdate(insertSQL);
+        System.out.println("Inserted data successfully");
+    }
+
+    private static void updateData(Statement statement) throws SQLException {
+        final String updateSQL = """
+                   UPDATE Student
+                   SET Name="Archit", Course="Construction"
+                   WHERE Name LIKE "Bharat";
+                """.trim();
+
+        statement.executeUpdate(updateSQL);
+        System.out.println("Updated data successfully");
+    }
+
+    private static void deleteData(Statement statement) throws SQLException {
+        final String updateSQL = """
+                DELETE FROM Student
+                WHERE Name IN ("Archit", "Bharat");
+                """.trim();
+
+        statement.executeUpdate(updateSQL);
+        System.out.println("Updated data successfully");
     }
 }
