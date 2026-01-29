@@ -3,7 +3,7 @@ package jdbc;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Main {
+public class CrudApp {
     private static final String URL = "jdbc:mysql://localhost:3306/test";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "admin";
