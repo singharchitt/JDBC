@@ -31,6 +31,7 @@ public class Main {
                         2. Insert data
                         3. Update data
                         4. Delete data
+                        5. Display data
                         0. Exit""");
 
             choice = sc.nextInt();
@@ -39,6 +40,7 @@ public class Main {
                 case 2 -> insertData(statement);
                 case 3 -> updateData(statement);
                 case 4 -> deleteData(statement);
+                case 5 -> displayData(statement);
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Incorrect options selected");
             }
@@ -90,5 +92,24 @@ public class Main {
 
         statement.executeUpdate(updateSQL);
         System.out.println("Updated data successfully");
+    }
+    private static void displayData(Statement statement) throws SQLException {
+        final String selectSQL = """
+            SELECT * FROM Student;
+            """;
+
+        ResultSet rs = statement.executeQuery(selectSQL);
+
+        System.out.println("\nID | Name | Age | Course");
+        System.out.println("--------------------------");
+
+        while (rs.next()) {
+            int id = rs.getInt("ID");
+            String name = rs.getString("Name");
+            int age = rs.getInt("Age");
+            String course = rs.getString("Course");
+
+            System.out.println(id + " | " + name + " | " + age + " | " + course);
+        }
     }
 }
